@@ -50,6 +50,7 @@ std::vector<Points> Attractor::updateForDuration(double duration){
     double x = this->_x;
     double y = this->_y;
     double z = this->_z;
+    this->_t = duration;
     for (double  iter_t = 0; iter_t < this->_t; iter_t += this->_dt){
         this->updateAttractor(iter_t);       
         points_vec.push_back({this->_x, this->_y, this->_z, iter_t});

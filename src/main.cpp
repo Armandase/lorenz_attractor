@@ -22,7 +22,7 @@ int main(void){
 
     while (!quit)
     {
-        lorenz.updateForDuration(10);
+        lorenz.updateForDuration(100);
         while (SDL_PollEvent(&e) != 0)
         {
             if (e.type == SDL_QUIT)

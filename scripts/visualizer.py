@@ -4,10 +4,6 @@ import matplotlib.pyplot as plt
 
 
 def main(filename: string):
-# 9.35216;6.58947;31.1388;9.97
-# 9.10996;6.24738;31.0591;9.98
-# 8.85347;5.92063;30.9463;9.99
-# 8.58564;5.61178;30.8034;10
     x, y, z, t = [], [], [], []
     with open(filename, 'r') as file:
         for line in file:
