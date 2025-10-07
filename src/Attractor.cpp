@@ -1,6 +1,7 @@
 #include "../inc/Attractor.hpp"
 #include "../inc/Points.hpp"
 #include <cmath>
+#include <fstream>
 
 Attractor::Attractor(){
     this->_x = 10;
@@ -50,17 +51,20 @@ std::vector<Points> Attractor::updateForDuration(double duration){
     double y = this->_y;
     double z = this->_z;
     for (double  iter_t = 0; iter_t < this->_t; iter_t += this->_dt){
-        Points tmp = this->updateAttractor(x, y, z, iter_t);       
-        points_vec.push_back({x, y, z, iter_t});
+        this->updateAttractor(iter_t);       
+        points_vec.push_back({this->_x, this->_y, this->_z, iter_t});
     }
-    for (auto &point : points_vec){
-        std::cout << point.getX() << ";" << point.getY() << ";" << point.getZ() << ";" << point.getT() << std::endl;
+    // save the vector into a log file
+    std::ofstream log_file("attractor_log.txt");
+    for (const auto& point : points_vec) {
+        log_file << point.getX() << ";" << point.getY() << ";" << point.getZ() << ";" << point.getT() << std::endl;
     }
+    log_file.close();
+
     return points_vec;
 }
 
-Points    Attractor::updateAttractor(double x, double y, double z, double t){
-// Points    Attractor::updateAttractor(double t){
+void Attractor::updateAttractor(double t){
     double x = this->_x;
     double y = this->_y;
     double z = this->_z;
@@ -81,10 +85,9 @@ Points    Attractor::updateAttractor(double x, double y, double z, double t){
     double k4y = this->_dt * this->delta_x(x + k3x, y + k3y, z + k3z);
     double k4z = this->_dt * this->delta_y(x + k3x, y + k3y, z + k3z);
 
-    x = x + (k1x + 2 * k2x + 2 * k3x + k4x) / 6;
-    y = y + (k1y + 2 * k2y + 2 * k3y + k4y) / 6;
-    z = z + (k1z + 2 * k2z + 2 * k3z + k4z) / 6;
-    return  {x, y, z, t};
+    this->_x = x + (k1x + 2 * k2x + 2 * k3x + k4x) / 6;
+    this->_y = y + (k1y + 2 * k2y + 2 * k3y + k4y) / 6;
+    this->_z = z + (k1z + 2 * k2z + 2 * k3z + k4z) / 6;
 }
 
 // dx/dt = σ(y - x)

@@ -25,8 +25,8 @@ class Attractor
         double getT() const { return (this->_t); };
 
         void    renderItself(SDL_Renderer *renderer) const;
-        Points    updateAttractor();
-        Points    updateAttractor(double x, double y, double z, double t);
+        void    updateAttractor(double t);
+
         std::vector<Points>    updateForDuration(double duration);
 
 
