@@ -1,1 +1,2 @@
-# gravity-simulation
+# Lorenz attractor
+
