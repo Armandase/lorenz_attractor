@@ -1,4 +1,4 @@
-# gravity-simulation
+# Lorenz attractor
 
 install vtk:
 
