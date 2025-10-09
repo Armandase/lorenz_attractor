@@ -3,7 +3,7 @@ MAKEFLAGS += -j
 CXX		=	c++
 NAME 	= 	lorenz
 SRC 	=	main.cpp utils.cpp Attractor.cpp Points.cpp
-HEADER	=	inc/simulation.hpp inc/Attractor.hpp inc/Points.hpp
+HEADER	=	inc/Attractor.hpp inc/Points.hpp
 OBJS	=	$(addprefix obj/, $(SRC:.cpp=.o))
 CXXFLAGS=	-Wall -Wextra --std=c++17 -g -I$(SDL2_TTF) -I$(SDL2_IMAGE) -I/usr/include/SDL2
 SDL2_TTF=	libs/SDL2_ttf

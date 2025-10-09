@@ -15,6 +15,13 @@ Points::Points(double x, double y, double z, double t){
     this->_t = t;
 }
 
+Points::Points(double x, double y, double z){
+    this->_x = x;
+    this->_y = y;
+    this->_z = z;
+    this->_t = 0.0;
+}
+
 Points::~Points(){}
 
 Points::Points(const Points& copy){
@@ -31,18 +38,7 @@ Points& Points::operator=(const Points &cpy){
     return (*this);
 }
 
-// double Points::getX() const {
-//     return this->_x;
-// }
-
-// double Points::getY() const {
-//     return this->_y;
-// }
-
-// double Points::getZ() const {
-//     return this->_z;
-// }
-
-// double Points::getT() const {
-//     return this->_t;
-// }
+std::ostream& operator<<(std::ostream& os, const Points& point){
+    os << point.getX() << ";" << point.getY() << ";" << point.getZ() << ";" << point.getT() << std::endl;
+    return os;
+}

@@ -1,41 +1,45 @@
-#include "../inc/simulation.hpp"
+#include "../inc/main.hpp"
+#include "../inc/Points.hpp"
 
-void    render_empty(SDL_Renderer *renderer){
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-    SDL_RenderClear(renderer);
+vtkNew<vtkPoints> pointsToVTKPoints(const std::vector<Points>& points) {
+    vtkNew<vtkPoints> vtkPoints;
+    for (const auto& pt : points) {
+        vtkPoints->InsertNextPoint(pt.getX(), pt.getY(), pt.getZ());
+    }
+    return vtkPoints;
 }
 
-void SDL_Error(const std::string &mess, SDL_Window *window, SDL_Renderer *renderer) {
-    SDL_Log((mess + " %s").c_str(), SDL_GetError());
-    if (renderer)
-        SDL_DestroyRenderer(renderer);
-    if (window) {
-        SDL_DestroyWindow(window);
-        SDL_Quit(); 
+vtkNew<vtkCellArray> getCellArray(const std::vector<Points>& points){
+    vtkNew<vtkPolyLine> polyLine;
+
+    polyLine->GetPointIds()->SetNumberOfIds(points.size());
+    for (size_t i = 0; i < points.size(); ++i) {
+        polyLine->GetPointIds()->SetId(i, i);
     }
-    exit(1);
+    
+    vtkNew<vtkCellArray> cells;
+    cells->InsertNextCell(polyLine);
+    return cells;
 }
 
-void drawCircle(int centreX, int centreY, int radius, SDL_Renderer *renderer){
-    int x = radius - 1;
-    int y = 0;
-    int dx = 1, dy = 1;
-    int err = dx - (radius * 2);
+vtkNew<vtkPolyDataMapper> pointsToMapper(const std::vector<Points>& points) {
+    vtkNew<vtkPoints> vtkPoints = pointsToVTKPoints(points);
 
-    while (x >= y){
-        SDL_RenderDrawLine(renderer, centreX + x, centreY - y, centreX + x, centreY + y);
-        SDL_RenderDrawLine(renderer, centreX - x, centreY - y, centreX - x, centreY + y);
-        SDL_RenderDrawLine(renderer, centreX + y, centreY - x, centreX + y, centreY + x);
-        SDL_RenderDrawLine(renderer, centreX - y, centreY - x, centreX - y, centreY + x);
-        if (err <= 0){
-            y++;
-            err += dy;
-            dy += 2;
-        }
-        if (err > 0) {
-            x--;
-            dx += 2;
-            err += dx - (radius * 2);
-        }
-    }
+    vtkNew<vtkCellArray> cells = getCellArray(points);
+    
+    vtkNew<vtkPolyData> polyData;
+    polyData->SetPoints(vtkPoints);
+    polyData->SetLines(cells);
+    
+    vtkNew<vtkPolyDataMapper> mapper;
+    mapper->SetInputData(polyData);
+    
+    return mapper;
+}
+
+void appendToMapper(const Points& point, vtkPolyDataMapper& mapper) {
+    vtkNew<vtkPoints> vtkPoint;
+    vtkPoint->InsertNextPoint(point.getX(), point.getY(), point.getZ());
+    mapper.GetInput()->SetPoints(vtkPoint);
+    mapper.Update();
 }
