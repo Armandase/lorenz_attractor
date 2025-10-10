@@ -12,12 +12,14 @@
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkPolyLine.h>
+#include <vtkPointData.h>
 #include <vtkProperty.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
 #include <vtkTextActor.h>
 #include <vtkTextProperty.h>
+#include <vtkUnsignedCharArray.h>
 #include <vtkCallbackCommand.h>
 #include <vtkCommand.h>
 

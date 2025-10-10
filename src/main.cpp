@@ -3,14 +3,82 @@
 #include "../inc/Attractor.hpp"
 #include <vtkCallbackCommand.h>
 
+#include <algorithm>
+#include <array>
+#include <cmath>
+
 struct CallbackData {
     Attractor* attractor;
     vtkPolyData* polyData;
     vtkRenderer* renderer;
     std::vector<Points>* pointsHistory;
+    vtkUnsignedCharArray* colors;
     int nbIter;
     int currentIteration;
 };
+
+namespace {
+
+constexpr double kPi = 3.14159265358979323846;
+
+std::array<unsigned char, 3> hsvToRgb(double h, double s, double v) {
+    const double clampedS = std::clamp(s, 0.0, 1.0);
+    const double clampedV = std::clamp(v, 0.0, 1.0);
+
+    double hue = std::fmod(h, 360.0);
+    if (hue < 0.0) {
+        hue += 360.0;
+    }
+
+    const double c = clampedV * clampedS;
+    const double hueSegment = hue / 60.0;
+    const double x = c * (1.0 - std::fabs(std::fmod(hueSegment, 2.0) - 1.0));
+    const double m = clampedV - c;
+
+    double rPrime = 0.0;
+    double gPrime = 0.0;
+    double bPrime = 0.0;
+
+    if (0.0 <= hueSegment && hueSegment < 1.0) {
+        rPrime = c;
+        gPrime = x;
+    } else if (1.0 <= hueSegment && hueSegment < 2.0) {
+        rPrime = x;
+        gPrime = c;
+    } else if (2.0 <= hueSegment && hueSegment < 3.0) {
+        gPrime = c;
+        bPrime = x;
+    } else if (3.0 <= hueSegment && hueSegment < 4.0) {
+        gPrime = x;
+        bPrime = c;
+    } else if (4.0 <= hueSegment && hueSegment < 5.0) {
+        rPrime = x;
+        bPrime = c;
+    } else {
+        rPrime = c;
+        bPrime = x;
+    }
+
+    return {
+        static_cast<unsigned char>(std::round(std::clamp((rPrime + m), 0.0, 1.0) * 255.0)),
+        static_cast<unsigned char>(std::round(std::clamp((gPrime + m), 0.0, 1.0) * 255.0)),
+        static_cast<unsigned char>(std::round(std::clamp((bPrime + m), 0.0, 1.0) * 255.0))
+    };
+}
+
+std::array<unsigned char, 3> getSmoothGradientColor(double t) {
+    const double clampedT = std::clamp(t, 0.0, 1.0);
+    const double hue = clampedT * 360.0; // full rainbow
+    return hsvToRgb(hue, 0.9, 1.0);
+}
+
+double computeAzimuthalFactor(const Points& point) {
+    const double angle = std::atan2(point.getY(), point.getX());
+    const double normalizedAngle = (angle + kPi) / (2.0 * kPi);
+    return std::clamp(normalizedAngle, 0.0, 1.0);
+}
+
+}
 
 void TimerCallback(vtkObject* caller, long unsigned int eventId, 
                    void* clientData, void* callData) {
@@ -33,6 +101,13 @@ void TimerCallback(vtkObject* caller, long unsigned int eventId,
     
     vtkPoints* vtkPts = data->polyData->GetPoints();
     vtkPts->InsertNextPoint(newPoint.getX(), newPoint.getY(), newPoint.getZ());
+
+    if (data->colors != nullptr) {
+        const double hueFactor = computeAzimuthalFactor(newPoint);
+        const auto color = getSmoothGradientColor(hueFactor);
+        data->colors->InsertNextTuple3(color[0], color[1], color[2]);
+        data->colors->Modified();
+    }
     
     // update lines to connect all points
     vtkCellArray* lines = data->polyData->GetLines();
@@ -61,7 +136,8 @@ void TimerCallback(vtkObject* caller, long unsigned int eventId,
 
 
 int main(int argc, char** argv) {
-    double x0 = 1.0, y0 = 1.0, z0 = 1.0;
+    // double x0 = 1.0, y0 = 1.0, z0 = 1.0;
+    double x0 = 1, y0 = 1, z0 = 1.0;
     double dt = 0.01; // Time step
     int nbIter = 10000;
     int timerInterval = 1;
@@ -78,6 +154,11 @@ int main(int argc, char** argv) {
     }
     if (argc >= 4) {
         dt = std::atof(argv[3]);
+    }
+    if (argc >= 7) {
+        x0 = std::atof(argv[4]);
+        y0 = std::atof(argv[5]);
+        z0 = std::atof(argv[6]);
     }
 
     std::cout << "Config:" << std::endl;
@@ -100,15 +181,26 @@ int main(int argc, char** argv) {
     vtkNew<vtkPolyData> polyData;
     polyData->SetPoints(vtkPoints);
     polyData->SetLines(lines);
+
+    vtkNew<vtkUnsignedCharArray> colorsArray;
+    colorsArray->SetNumberOfComponents(3);
+    colorsArray->SetName("Colors");
+    const auto initialColor = getSmoothGradientColor(computeAzimuthalFactor(initialPoint));
+    colorsArray->InsertNextTuple3(initialColor[0], initialColor[1], initialColor[2]);
+    polyData->GetPointData()->SetScalars(colorsArray);
     
     vtkNew<vtkPolyDataMapper> mapper;
     mapper->SetInputData(polyData);
+    mapper->SetScalarModeToUsePointData();
+    mapper->SetColorModeToDirectScalars();
+    mapper->ScalarVisibilityOn();
     
     // Setup actor it's used to represent an entity in a rendering scene
     vtkNew<vtkNamedColors> colors;
     vtkNew<vtkActor> actor;
     actor->SetMapper(mapper);
-    actor->GetProperty()->SetColor(colors->GetColor3d("Tomato").GetData());
+    actor->GetProperty()->SetColor(1.0, 1.0, 1.0);
+    actor->GetProperty()->SetLighting(false);
     actor->GetProperty()->SetLineWidth(2.0);
     
     // Setup renderer
@@ -155,6 +247,7 @@ int main(int argc, char** argv) {
     callbackData.polyData = polyData;
     callbackData.renderer = renderer;
     callbackData.pointsHistory = &pointsHistory;
+    callbackData.colors = colorsArray;
     callbackData.nbIter = nbIter;
     callbackData.currentIteration = 0;
     

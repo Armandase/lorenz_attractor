@@ -29,10 +29,6 @@ class Attractor
 
 
     private:
-        double delta_x() const;
-        double delta_y() const;
-        double delta_z() const;
-
         double delta_x(double x, double y, __attribute_maybe_unused__ double z) const;
         double delta_y(double x, double y, double z) const;
         double delta_z(double x, double y, double z) const;

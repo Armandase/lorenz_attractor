@@ -40,12 +40,6 @@ std::vector<Points> Attractor::updateForDuration(double duration){
         this->updateAttractor();
         points_vec.push_back({this->_x, this->_y, this->_z, iter_t});
     }
-    // std::ofstream log_file("attractor_log.txt");
-    // for (const auto& point : points_vec) {
-    //     log_file << point.getX() << ";" << point.getY() << ";" << point.getZ() << ";" << point.getT() << std::endl;
-    // }
-    // log_file.close();
-
     return points_vec;
 }
 
@@ -75,22 +69,8 @@ void Attractor::updateAttractor(){
     this->_y = y + (k1y + 2 * k2y + 2 * k3y + k4y) / 6;
     this->_z = z + (k1z + 2 * k2z + 2 * k3z + k4z) / 6;
 }
-
-// dx/dt = σ(y - x)
-double Attractor::delta_x() const{
-    return SIGMA * (this->_y - this->_x);
-}
-
-// dy/dt = x(ρ - z) - y
-double Attractor::delta_y() const{
-    return this->_x * (RHO - this->_z) - this->_y;
-}
-
-// dz/dt = xy - βz
-double Attractor::delta_z() const{
-    return this->_x * this->_y - BETA * this->_z;
-}
-
+// /* 
+// Lorenz attractor equations
 // dx/dt = σ(y - x)
 double Attractor::delta_x(double x, double y, __attribute_maybe_unused__ double z) const{
     return SIGMA * (y - x);
@@ -105,3 +85,22 @@ double Attractor::delta_y(double x, double y, double z) const{
 double Attractor::delta_z(double x, double y, double z) const{
     return x * y - BETA * z;
 }
+// */
+
+//Aizawa attractor equations
+/*
+double Attractor::delta_x(double x, double y, __attribute_maybe_unused__ double z) const{
+    double a = 0.95, b = 0.7, c = 0.6, d = 3.5, e = 0.25, f = 0.1;
+    return (z - b) * x - d * y;
+}
+
+double Attractor::delta_y(double x, double y, double z) const{
+    double a = 0.95, b = 0.7, c = 0.6, d = 3.5, e = 0.25, f = 0.1;
+    return d * x + (z - b) * y;
+}
+
+double Attractor::delta_z(double x, double y, double z) const{
+    double a = 0.95, b = 0.7, c = 0.6, d = 3.5, e = 0.25, f = 0.1;
+    return c + a * z - (z * z * z) / 3 - (x * x) + f * z * (x * x * x);
+}
+*/
