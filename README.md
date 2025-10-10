@@ -24,4 +24,4 @@ make
 
 ## Then:
 
-![Lorenz attractor](./assets/lorenz_attractor.png)
+![Lorenz attractor](./assets/lorenz_multicolor.png)
