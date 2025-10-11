@@ -29,7 +29,7 @@ cmake --build build
 **Run**
 
 ```bash
-./build/lorenz [nb_iterations] [timer_ms] [time_step] [x0 y0 z0]
+./build/attractor [nb_iterations] [timer_ms] [time_step] [x0 y0 z0]
 ```
 
 Defaults: `nb_iterations=10000`, `timer_ms=1`, `time_step=0.01`, `x0=y0=z0=1`.
