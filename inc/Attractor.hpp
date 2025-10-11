@@ -4,11 +4,8 @@
 # include "Points.hpp"
 # include "main.hpp"
 # include <vector>
-
-# define BETA (8.0/3.0)
-# define SIGMA 10.0
-# define RHO 28.0
-# define A 1.4
+# include <cmath>
+# include <fstream>
 
 class Attractor
 {

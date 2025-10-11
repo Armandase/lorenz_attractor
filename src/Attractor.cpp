@@ -1,8 +1,6 @@
 #include "../inc/Attractor.hpp"
 #include "../inc/Points.hpp"
 #include "../inc/main.hpp"
-#include <cmath>
-#include <fstream>
 
 Attractor::Attractor(){
     this->_x = 10;

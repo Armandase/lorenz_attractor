@@ -217,7 +217,8 @@ int main(int argc, char** argv) {
     
     // Add title text
     vtkNew<vtkTextActor> titleActor;
-    titleActor->SetInput("Lorenz Attractor - Real-time Simulation");
+    std::string title = attractorName + " Attractor - Real-time Simulation";
+    titleActor->SetInput(title.c_str());
     titleActor->GetTextProperty()->SetFontSize(24);
     titleActor->GetTextProperty()->SetColor(colors->GetColor3d("White").GetData());
     titleActor->SetPosition(10, 10);
@@ -227,7 +228,7 @@ int main(int argc, char** argv) {
     vtkNew<vtkRenderWindow> renderWindow;
     renderWindow->AddRenderer(renderer);
     renderWindow->SetSize(1024, 768);
-    renderWindow->SetWindowName("Lorenz Attractor - Real-time");
+    renderWindow->SetWindowName("3D Attractor Visualization");
     
     // interactor: handles mouse and keyboard events
     vtkNew<vtkRenderWindowInteractor> renderWindowInteractor;
