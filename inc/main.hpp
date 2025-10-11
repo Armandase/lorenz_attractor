@@ -32,10 +32,24 @@
 
 class Points;
 
+typedef struct s_deltas {
+    std::function<double(double, double, double)> delta_x;
+    std::function<double(double, double, double)> delta_y;
+    std::function<double(double, double, double)> delta_z;
+}               t_deltas;
+
 vtkNew<vtkPoints> pointsToVTKPoints(const std::vector<Points>& points);
 vtkNew<vtkCellArray> getCellArray(const std::vector<Points>& points);
 vtkNew<vtkPolyDataMapper> pointsToMapper(const std::vector<Points>& points);
 void appendToMapper(const Points& point, vtkPolyDataMapper& mapper);
 
+t_deltas findAttractorByName(const std::string& attractorName);
+
+t_deltas getLorenzAttractorFormula();
+t_deltas getHalvorsenAttractorFormula();
+t_deltas getAizawaAttractorFormula();
+t_deltas getSprottBAttractorFormula();
+t_deltas getDadrasAttractorFormula();
+t_deltas getRosselAttractorFormula();
 
 #endif

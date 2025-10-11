@@ -1,8 +1,9 @@
-# Lorenz Attractor
+# 3D Attractor
 
-Real-time VTK visualization of the Lorenz attractor with a smooth rainbow coloring and interactive camera.
+Real-time VTK visualization of 3D attractors with a smooth rainbow coloring and interactive camera.
 
 ![Lorenz attractor](./assets/lorenz_multicolor.png)
+here, Lorenz attractor
 
 ## Quick start
 
@@ -33,6 +34,13 @@ cmake --build build
 
 Defaults: `nb_iterations=10000`, `timer_ms=1`, `time_step=0.01`, `x0=y0=z0=1`.
 
+## Bibliographie
+
+http://www.3d-meier.de/tut19/Seite0.html
+
+https://sequelaencollection.home.blog/3d-chaotic-attractors/
+
 ## License
 
 MIT — see [`LICENSE`](./LICENSE).
+

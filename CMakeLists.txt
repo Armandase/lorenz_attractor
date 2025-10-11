@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
-project(lorenz VERSION 1.0 LANGUAGES CXX)
+project(attractor VERSION 1.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -26,7 +26,7 @@ find_package(VTK COMPONENTS
 )
 
 if (NOT VTK_FOUND)
-  message(FATAL_ERROR "lorenz: Unable to find the VTK build folder.")
+  message(FATAL_ERROR "Attractor: Unable to find the VTK build folder.")
 endif()
 
 # Include directories
@@ -39,6 +39,7 @@ set(SOURCES
     src/utils.cpp
     src/Attractor.cpp
     src/Points.cpp
+    src/formulas.cpp
 )
 
 # Header files

@@ -43,3 +43,27 @@ void appendToMapper(const Points& point, vtkPolyDataMapper& mapper) {
     mapper.GetInput()->SetPoints(vtkPoint);
     mapper.Update();
 }
+
+t_deltas findAttractorByName(const std::string& attractorName) {
+    std::string lowerName = attractorName;
+    std::transform(lowerName.begin(), lowerName.end(), lowerName.begin(), ::tolower);
+
+    if (lowerName == "lorenz") {
+        return getLorenzAttractorFormula();
+    } else if (lowerName == "halvorsen") {
+        return getHalvorsenAttractorFormula();
+    } else if (lowerName == "aizawa") {
+        return getAizawaAttractorFormula();
+    }
+    else if (lowerName == "sprottb") {
+        return getSprottBAttractorFormula();
+    }
+    else if (lowerName == "dadras") {
+        return getDadrasAttractorFormula();
+    }
+    else if (lowerName == "rossel") {
+        return getRosselAttractorFormula();
+    }
+    std::cerr << "Warning: Unknown attractor name '" << attractorName << "'. Defaulting to 'lorenz'." << std::endl;
+    return getLorenzAttractorFormula();
+}

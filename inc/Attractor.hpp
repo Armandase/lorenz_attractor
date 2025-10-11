@@ -2,17 +2,20 @@
 # define ATTRACTOR_HPP
 
 # include "Points.hpp"
+# include "main.hpp"
 # include <vector>
 
-# define BETA 8/3
-# define SIGMA 10
-# define RHO 28
+# define BETA (8.0/3.0)
+# define SIGMA 10.0
+# define RHO 28.0
+# define A 1.4
 
 class Attractor
 {
     public:
         Attractor();
         Attractor(double x, double y, double z, double dt);
+        Attractor(double x, double y, double z, double dt, t_deltas deltas);
         ~Attractor();
 
         Attractor(const Attractor& copy);
@@ -29,9 +32,7 @@ class Attractor
 
 
     private:
-        double delta_x(double x, double y, __attribute_maybe_unused__ double z) const;
-        double delta_y(double x, double y, double z) const;
-        double delta_z(double x, double y, double z) const;
+        t_deltas deltas; // struct containing the 3 functions for dx/dt, dy/dt and dz/dt
 
         double _x, _y, _z;
         double _dt;

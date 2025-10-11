@@ -141,6 +141,7 @@ int main(int argc, char** argv) {
     double dt = 0.01; // Time step
     int nbIter = 10000;
     int timerInterval = 1;
+    std::string attractorName = "lorenz";
 
     if (argc == 1) {
         std::cout << "Usage: " << argv[0] << " [nb_iterations] [timer_interval_ms] [time_step_ms]" << std::endl;
@@ -160,14 +161,20 @@ int main(int argc, char** argv) {
         y0 = std::atof(argv[5]);
         z0 = std::atof(argv[6]);
     }
+    if (argc >= 8) {
+        attractorName = std::string(argv[7]);
+    }
 
     std::cout << "Config:" << std::endl;
     std::cout << " - nb_iterations: " << nbIter << std::endl;
     std::cout << " - timer_interval_ms: " << timerInterval << std::endl;
     std::cout << " - time_step: " << dt << std::endl;
     std::cout << " - initial_point: (" << x0 << ", " << y0 << ", " << z0 << ")" << std::endl;
+    std::cout << " - attractor: " << attractorName << std::endl;
     
-    Attractor attractor(x0, y0, z0, dt);
+    t_deltas attractorFormula = findAttractorByName(attractorName);
+    
+    Attractor attractor(x0, y0, z0, dt, attractorFormula);
     
     std::vector<Points> pointsHistory;
     Points initialPoint(x0, y0, z0);
